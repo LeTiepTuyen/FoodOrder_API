@@ -4,7 +4,7 @@ const Food = require('../models/food.model');
 exports.getAllFoods = async (req, res) => {
   try {
     const foods = await Food.find().populate('category_id');
-    res.status(200).json(foods);
+    res.render('homepage', { foods }); // Render trang EJS với dữ liệu
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

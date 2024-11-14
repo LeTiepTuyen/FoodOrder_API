@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Food Order - Homepage</title>
+  <link href="/tailwind/output.css" rel="stylesheet"> <!-- Link đến Tailwind CSS -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+    }
+    .active {
+      background-color: #2563eb; /* Màu xanh cho button active */
+      color: white;
+    }
+    .filter-button {
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .filter-button:hover {
+      background-color: #93c5fd; /* Màu khi hover */
+      color: black;
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen bg-gray-100">
+  <!-- Header -->
+  <header class="bg-blue-600 text-white p-4 flex justify-between items-center">
+    <div class="flex items-center">
+      <h1 class="text-xl font-bold">Food Order</h1>
+    </div>
+    <nav class="space-x-4">
+      <a href="/" class="text-white hover:text-blue-300 hover:underline cursor-pointer">Home</a>
+      <a href="#" class="text-white hover:text-blue-300 hover:underline cursor-pointer">Categories</a>
+      <a href="#" class="text-white hover:text-blue-300 hover:underline cursor-pointer">About Us</a>
+      <a href="#" class="text-white hover:text-blue-300 hover:underline cursor-pointer">Contact</a>
+    </nav>
+    <input
+      id="search-bar"
+      type="text"
+      placeholder="Search foods..."
+      class="px-4 py-2 rounded-lg text-gray-700"
+      style="flex-grow: 1; max-width: 300px; margin-left: 16px"
+    />
+  </header>
+
+  <!-- Main Content -->
+  <main class="p-4">
+    <h2 class="text-2xl font-semibold mb-4">Available Foods</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <% foods.forEach(food => { %>
+        <div class="bg-white shadow-md rounded overflow-hidden">
+          <img src="<%= food.img %>" alt="<%= food.name %>" class="w-full h-48 object-cover">
+          <div class="p-4">
+            <h3 class="text-xl font-bold"><%= food.name %></h3>
+            <p class="text-gray-600">Price: $<%= food.price.toFixed(2) %></p>
+            <p class="text-gray-500"><%= food.address %></p>
+            <button class="mt-2 bg-blue-500 text-white py-1 px-4 rounded hover:bg-blue-600">Order Now</button>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white mt-12">
+    <div class="container mx-auto px-4 py-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <h3 class="text-lg font-semibold mb-4">About Us</h3>
+          <p class="text-gray-400">Our food ordering platform offers the best dishes from top restaurants.</p>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-400 hover:text-white">Menu</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white">Order Tracking</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white">Contact Us</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Connect With Us</h3>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-400 hover:text-white">Facebook</a>
+            <a href="#" class="text-gray-400 hover:text-white">Twitter</a>
+            <a href="#" class="text-gray-400 hover:text-white">Instagram</a>
+          </div>
+        </div>
+      </div>
+      <div class="mt-8 pt-8 border-t border-gray-700 text-center text-gray-400">
+        <p>&copy; 2024 Food Order. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
