@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link href="/tailwind/output.css" rel="stylesheet">
+</head>
+<body class="flex items-center justify-center min-h-screen bg-background text-textPrimary font-poppins">
+  <div class="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
+    <h2 class="text-2xl font-bold mb-6 text-center">Login to Food Order App</h2>
+    <form action="/login" method="POST" class="space-y-4">
+      <div>
+        <label for="username" class="block text-sm font-medium">Username</label>
+        <input type="text" id="username" name="username" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-primary" required>
+      </div>
+      <div>
+        <label for="password" class="block text-sm font-medium">Password</label>
+        <div class="relative">
+          <input type="password" id="password" name="password" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-primary" required>
+          <button type="button" onclick="togglePassword()" class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700">
+            <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M10 3a7 7 0 017 7 7 7 0 01-14 0 7 7 0 017-7zm0 12a5 5 0 100-10 5 5 0 000 10zM10 6a4 4 0 100 8 4 4 0 000-8z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <button type="submit" class="w-full bg-primary text-white py-2 rounded-md hover:bg-secondary transition-all">Login</button>
+    </form>
+    <p class="mt-4 text-sm text-center">
+      Don't have an account? <a href="/register" class="text-primary hover:underline">Register here</a>
+    </p>
+    <p class="mt-4 text-sm text-center">
+      <a href="/" class="text-primary hover:underline">Back to Homepage</a>
+    </p>
+  </div>
+
+  <script>
+    function togglePassword() {
+      const passwordField = document.getElementById('password');
+      const eyeIcon = document.getElementById('eyeIcon');
+      if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        eyeIcon.innerHTML = '<path d="M4 10s1.5-3 6-3 6 3 6 3-1.5 3-6 3-6-3-6-3z"/><path d="M10 5c1.633 0 3.17.659 4.247 1.823L16.622 6a1 1 0 01.707 1.707l-2.375 2.375A6.978 6.978 0 0110 13c-1.632 0-3.17-.659-4.247-1.823L3.378 14A1 1 0 012.671 12.29L5.046 9.915A6.978 6.978 0 0110 7a1 1 0 010-2z"/>';
+      } else {
+        passwordField.type = 'password';
+        eyeIcon.innerHTML = '<path d="M10 3a7 7 0 017 7 7 7 0 01-14 0 7 7 0 017-7zm0 12a5 5 0 100-10 5 5 0 000 10zM10 6a4 4 0 100 8 4 4 0 000-8z"/>';
+      }
+    }
+  </script>
+</body>
+</html>

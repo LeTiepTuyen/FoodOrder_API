@@ -4,24 +4,29 @@ const Food = require('../models/food.model');
 exports.getAllFoods = async (req, res) => {
   try {
     const foods = await Food.find().populate('category_id');
-    res.render('homepage', { foods }); // Render trang EJS với dữ liệu
+    res.render('homepage', { foods, isLoading: false }); // Truyền biến isLoading
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-// Get food by ID
+// Get food by ID and render detail page with related dishes
 exports.getFoodById = async (req, res) => {
   try {
     const food = await Food.findById(req.params.id).populate('category_id');
     if (!food) {
-      return res.status(404).json({ message: 'Food not found' });
+      return res.status(404).render('error', { message: 'Food not found' });
     }
-    res.status(200).json(food);
+
+    // Lấy danh sách các món ăn khác không trùng với món đang hiển thị
+    const relatedFoods = await Food.find({ _id: { $ne: req.params.id } }).limit(3);
+
+    res.render('detailpage', { food, relatedFoods });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).render('error', { message: error.message });
   }
 };
+
 
 // Create new food
 exports.createFood = async (req, res) => {

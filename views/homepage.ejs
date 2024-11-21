@@ -4,93 +4,162 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Food Order - Homepage</title>
-  <link href="/tailwind/output.css" rel="stylesheet"> <!-- Link đến Tailwind CSS -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: "Poppins", sans-serif;
-    }
-    .active {
-      background-color: #2563eb; /* Màu xanh cho button active */
-      color: white;
-    }
-    .filter-button {
-      transition: background-color 0.3s, color 0.3s;
-    }
-    .filter-button:hover {
-      background-color: #93c5fd; /* Màu khi hover */
-      color: black;
-    }
-  </style>
+  <link href="/tailwind/output.css" rel="stylesheet">
 </head>
-<body class="flex flex-col min-h-screen bg-gray-100">
+<body class="flex flex-col min-h-screen bg-background text-textPrimary font-poppins">
+
   <!-- Header -->
-  <header class="bg-blue-600 text-white p-4 flex justify-between items-center">
-    <div class="flex items-center">
-      <h1 class="text-xl font-bold">Food Order</h1>
+  <header class="bg-primary text-white p-4 shadow-md">
+    <div class="container mx-auto flex justify-between items-center">
+      <div class="flex items-center space-x-2">
+        <a href="/">
+          <img src="/logo.png" alt="Logo" class="h-10">
+        </a>
+        <h1 class="text-3xl font-extrabold tracking-wide font-roboto">Food Order</h1>
+      </div>
+      <nav class="space-x-6 font-roboto text-lg flex items-center">
+        <a href="/" class="hover:text-secondary transition-colors">Home</a>
+        <a href="#" class="hover:text-secondary transition-colors">Categories</a>
+        <a href="#" class="hover:text-secondary transition-colors">About Us</a>
+        <a href="#" class="hover:text-secondary transition-colors">Contact</a>
+        
+        <% if (user) { %>
+          <span class="text-white">Hello, <%= user.username %>!</span>
+          <a href="/cart" class="flex items-center space-x-2 bg-secondary text-white px-4 py-2 rounded-md hover:bg-yellow-500 transition-all">
+            <img src="/cart-icon.png" alt="Cart" class="h-5 w-5">
+            <span>Cart</span>
+          </a>
+          <a href="/logout" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-all">Logout</a>
+        <% } else { %>
+          <a href="/login" class="bg-secondary text-white px-4 py-2 rounded-md hover:bg-yellow-500 transition-all">Login</a>
+          <a href="/register" class="bg-secondary text-white px-4 py-2 rounded-md hover:bg-yellow-500 transition-all">Register</a>
+        <% } %>
+      </nav>
     </div>
-    <nav class="space-x-4">
-      <a href="/" class="text-white hover:text-blue-300 hover:underline cursor-pointer">Home</a>
-      <a href="#" class="text-white hover:text-blue-300 hover:underline cursor-pointer">Categories</a>
-      <a href="#" class="text-white hover:text-blue-300 hover:underline cursor-pointer">About Us</a>
-      <a href="#" class="text-white hover:text-blue-300 hover:underline cursor-pointer">Contact</a>
-    </nav>
-    <input
-      id="search-bar"
-      type="text"
-      placeholder="Search foods..."
-      class="px-4 py-2 rounded-lg text-gray-700"
-      style="flex-grow: 1; max-width: 300px; margin-left: 16px"
-    />
   </header>
 
-  <!-- Main Content -->
-  <main class="p-4">
-    <h2 class="text-2xl font-semibold mb-4">Available Foods</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <% foods.forEach(food => { %>
-        <div class="bg-white shadow-md rounded overflow-hidden">
-          <img src="<%= food.img %>" alt="<%= food.name %>" class="w-full h-48 object-cover">
-          <div class="p-4">
-            <h3 class="text-xl font-bold"><%= food.name %></h3>
-            <p class="text-gray-600">Price: $<%= food.price.toFixed(2) %></p>
-            <p class="text-gray-500"><%= food.address %></p>
-            <button class="mt-2 bg-blue-500 text-white py-1 px-4 rounded hover:bg-blue-600">Order Now</button>
-          </div>
+  <!-- Carousel -->
+  <section class="container mx-auto my-8">
+    <div class="relative overflow-hidden rounded-lg shadow-lg w-full max-w-5xl mx-auto"> <!-- Mở rộng chiều ngang -->
+      <div class="flex transition-transform duration-1000 ease-in-out" id="carousel-content">
+        <div class="w-full flex-shrink-0">
+          <img src="/carousel-images/food1.jpg" class="w-full h-80 object-cover" alt="Delicious Food 1"> <!-- Tăng chiều cao nếu cần -->
         </div>
+        <div class="w-full flex-shrink-0">
+          <img src="/carousel-images/food2.jpg" class="w-full h-80 object-cover" alt="Delicious Food 2">
+        </div>
+        <div class="w-full flex-shrink-0">
+          <img src="/carousel-images/food3.jpg" class="w-full h-80 object-cover" alt="Delicious Food 3">
+        </div>
+      </div>
+      <!-- Button adjustments -->
+      <button class="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow hover:bg-gray-200" id="prev">
+        &lt;
+      </button>
+      <button class="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow hover:bg-gray-200" id="next">
+        &gt;
+      </button>
+
+      <!-- Indicators -->
+      <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10 flex space-x-2">
+        <button class="w-3 h-3 bg-gray-400 rounded-full" id="indicator-0"></button>
+        <button class="w-3 h-3 bg-gray-400 rounded-full" id="indicator-1"></button>
+        <button class="w-3 h-3 bg-gray-400 rounded-full" id="indicator-2"></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="p-6 container mx-auto mt-8">
+    <h2 class="text-3xl font-bold mb-6 font-roboto">Available Foods</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <% foods.forEach(food => { %>
+        <a href="/<%= food._id %>" class="block bg-white shadow-lg rounded-lg overflow-hidden transition-transform transform hover:scale-105 hover:shadow-2xl">
+          <img src="<%= food.img %>" alt="<%= food.name %>" class="w-full h-56 object-cover">
+          <div class="p-5">
+            <h3 class="text-2xl font-semibold mb-2"><%= food.name %></h3>
+            <div class="flex items-center space-x-2 mb-1">
+              <img src="/price-tag.png" alt="Price" class="h-5 w-5">
+              <p class="text-lg text-secondary font-semibold">$<%= food.price.toFixed(2) %></p>
+            </div>
+            <div class="flex items-center space-x-2">
+              <img src="/location.png" alt="Location" class="h-5 w-5">
+              <p class="text-sm text-textSecondary"><%= food.address %></p>
+            </div>
+            <button class="mt-3 w-full bg-accent text-white py-2 rounded-md hover:bg-secondary transition-all flex items-center justify-center space-x-2">
+              <img src="/cart.png" alt="Order Now" class="h-8 w-8">
+              <span>Order Now</span>
+            </button>
+          </div>
+        </a>
       <% }) %>
     </div>
   </main>
 
   <!-- Footer -->
-  <footer class="bg-gray-800 text-white mt-12">
+  <footer class="bg-footerBackground text-footerText mt-12">
     <div class="container mx-auto px-4 py-8">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div>
           <h3 class="text-lg font-semibold mb-4">About Us</h3>
-          <p class="text-gray-400">Our food ordering platform offers the best dishes from top restaurants.</p>
+          <p class="text-footerText">Our food order service is dedicated to providing the best experience for our customers.</p>
         </div>
         <div>
           <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
           <ul class="space-y-2">
-            <li><a href="#" class="text-gray-400 hover:text-white">Menu</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-white">Order Tracking</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-white">Contact Us</a></li>
+            <li><a href="/" class="text-footerText hover:text-white">Home</a></li>
+            <li><a href="#" class="text-footerText hover:text-white">Categories</a></li>
+            <li><a href="#" class="text-footerText hover:text-white">Contact Us</a></li>
           </ul>
         </div>
         <div>
           <h3 class="text-lg font-semibold mb-4">Connect With Us</h3>
           <div class="flex space-x-4">
-            <a href="#" class="text-gray-400 hover:text-white">Facebook</a>
-            <a href="#" class="text-gray-400 hover:text-white">Twitter</a>
-            <a href="#" class="text-gray-400 hover:text-white">Instagram</a>
+            <a href="#" class="text-footerText hover:text-white">Facebook</a>
+            <a href="#" class="text-footerText hover:text-white">Twitter</a>
+            <a href="#" class="text-footerText hover:text-white">Instagram</a>
           </div>
         </div>
       </div>
-      <div class="mt-8 pt-8 border-t border-gray-700 text-center text-gray-400">
+      <div class="mt-8 pt-8 border-t border-gray-700 text-center text-footerText">
         <p>&copy; 2024 Food Order. All rights reserved.</p>
       </div>
     </div>
   </footer>
+
+  <script>
+    const carouselContent = document.getElementById('carousel-content');
+    const prevButton = document.getElementById('prev');
+    const nextButton = document.getElementById('next');
+    const indicators = document.querySelectorAll('button[id^="indicator-"]');
+    let currentIndex = 0;
+
+    function updateCarousel() {
+      const width = carouselContent.firstElementChild.clientWidth;
+      carouselContent.style.transform = `translateX(-${currentIndex * width}px)`;
+      updateIndicators();
+    }
+
+    function updateIndicators() {
+      indicators.forEach((indicator, index) => {
+        indicator.classList.toggle('bg-gray-400', index !== currentIndex);
+        indicator.classList.toggle('bg-white', index === currentIndex);
+      });
+    }
+
+    prevButton.addEventListener('click', () => {
+      currentIndex = (currentIndex === 0) ? carouselContent.childElementCount - 1 : currentIndex - 1;
+      updateCarousel();
+    });
+
+    nextButton.addEventListener('click', () => {
+      currentIndex = (currentIndex === carouselContent.childElementCount - 1) ? 0 : currentIndex + 1;
+      updateCarousel();
+    });
+
+    setInterval(() => {
+      nextButton.click();
+    }, 3000); // Tự động chuyển ảnh sau 3 giây
+  </script>
 </body>
 </html>

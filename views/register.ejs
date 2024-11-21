@@ -3,38 +3,89 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register Account</title>
-  <link href="/tailwind/output.css" rel="stylesheet"> <!-- Link đến Tailwind CSS -->
+  <title>Register</title>
+  <link href="/tailwind/output.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/flowbite@1.5.3/dist/flowbite.min.js"></script>
 </head>
-<body class="bg-gray-100 flex justify-center items-center h-screen">
-  <div class="w-full max-w-md bg-white shadow-md rounded p-6">
-    <h1 class="text-2xl font-bold mb-4 text-center">Register Account</h1>
-    <form action="/api/accounts/register" method="POST" class="space-y-4">
+<body class="flex items-center justify-center min-h-screen bg-background text-textPrimary font-poppins">
+  <div class="w-full max-w-lg bg-white p-8 rounded-lg shadow-lg relative">
+    
+    <!-- Toast thông báo (sử dụng chung vị trí) -->
+    <div id="toast-container" class="absolute top-0 left-1/2 transform -translate-x-1/2 mt-4">
+      <% if (typeof message !== 'undefined' && message) { %>
+        <div id="toast-success" class="flex items-center p-4 mb-4 w-full max-w-xs text-green-700 bg-green-100 rounded-lg shadow" role="alert">
+          <svg aria-hidden="true" class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M16.707 5.293a1 1 0 00-1.414-1.414L8 11.172 5.707 8.879a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l8-8z"></path>
+          </svg>
+          <span class="text-sm font-medium"><%= message %></span>
+        </div>
+        <% if (redirect) { %>
+          <script>
+            setTimeout(() => {
+              window.location.href = '/login';
+            }, 2000);
+          </script>
+        <% } %>
+      <% } %>
+      <!-- Warning Toast sẽ hiển thị cùng vị trí với Success Toast -->
+      <div id="toast-warning" class="hidden flex items-center p-4 w-full max-w-xs text-yellow-700 bg-yellow-100 rounded-lg shadow" role="alert">
+        <svg aria-hidden="true" class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M18 8a1 1 0 01.993.883L19 9v4a1 1 0 01-.883.993L18 14H4a1 1 0 01-.993-.883L3 13V9a1 1 0 01.883-.993L4 8h14zm0-2H4a2 2 0 00-1.995 1.85L2 8v4a2 2 0 001.85 1.995L4 14h14a2 2 0 001.995-1.85L20 12V8a2 2 0 00-1.85-1.995L18 6z"></path>
+        </svg>
+        <span class="text-sm font-medium">Passwords do not match. Please try again.</span>
+      </div>
+    </div>
+
+    <h2 class="text-2xl font-bold mb-6 text-center">Create a New Account</h2>
+    <form id="registerForm" action="/register" method="POST" class="space-y-4">
       <div>
-        <label for="username" class="block text-gray-700">Username</label>
-        <input type="text" name="username" id="username" class="w-full px-3 py-2 border rounded" required>
+        <label for="username" class="block text-sm font-medium">Username</label>
+        <input type="text" id="username" name="username" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-primary" required>
       </div>
       <div>
-        <label for="password" class="block text-gray-700">Password</label>
-        <input type="password" name="password" id="password" class="w-full px-3 py-2 border rounded" required>
+        <label for="password" class="block text-sm font-medium">Password</label>
+        <input type="text" id="password" name="password" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-primary" required>
       </div>
       <div>
-        <label for="phone" class="block text-gray-700">Phone</label>
-        <input type="text" name="phone" id="phone" class="w-full px-3 py-2 border rounded" required>
+        <label for="confirmPassword" class="block text-sm font-medium">Confirm Password</label>
+        <input type="text" id="confirmPassword" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-primary" required>
       </div>
       <div>
-        <label for="address" class="block text-gray-700">Address</label>
-        <input type="text" name="address" id="address" class="w-full px-3 py-2 border rounded" required>
+        <label for="phone" class="block text-sm font-medium">Phone</label>
+        <input type="text" id="phone" name="phone" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-primary" required>
       </div>
       <div>
-        <label for="role" class="block text-gray-700">Role</label>
-        <select name="role" id="role" class="w-full px-3 py-2 border rounded">
+        <label for="address" class="block text-sm font-medium">Address</label>
+        <input type="text" id="address" name="address" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-primary" required>
+      </div>
+      <div>
+        <label for="role" class="block text-sm font-medium">Role</label>
+        <select id="role" name="role" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-primary">
           <option value="user">User</option>
           <option value="admin">Admin</option>
         </select>
       </div>
-      <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">Register</button>
+      <button type="submit" class="w-full bg-primary text-white py-2 rounded-md hover:bg-secondary transition-all">Register</button>
     </form>
+    <p class="mt-4 text-sm text-center">
+      Already have an account? <a href="/login" class="text-primary hover:underline">Login here</a>
+    </p>
+    <p class="mt-4 text-sm text-center">
+      <a href="/" class="text-primary hover:underline">Back to Homepage</a>
+    </p>
   </div>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', function(event) {
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const warningToast = document.getElementById('toast-warning');
+
+      if (password !== confirmPassword) {
+        event.preventDefault(); // Ngăn việc gửi form
+        warningToast.classList.remove('hidden'); // Hiện toast cảnh báo
+      }
+    });
+  </script>
 </body>
 </html>

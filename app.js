@@ -2,40 +2,64 @@ const express = require('express');
 const morgan = require('morgan');
 const path = require('path');
 const connectDB = require('./configs/database');
+require('dotenv').config();
+const session = require('express-session');
+const checkAuthSession = require('./middlewares/authSession');
 
-// Sửa lại các đường dẫn đến thư mục routers
 const accountRoutes = require('./routers/account.routes');
 const cartRoutes = require('./routers/cart.routes');
 const categoryRoutes = require('./routers/category.routes');
 const foodRoutes = require('./routers/food.routes');
 const orderRoutes = require('./routers/order.routes');
+const authRoutes = require('./routers/auth.routes');
 
 const app = express();
 
-// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
-// Thiết lập EJS làm view engine
+// Favicon
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
+// EJS view engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Cung cấp file tĩnh từ thư mục public
+// Static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Kết nối tới MongoDB
+// Session
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'A3!sd&8#bXe$T0^XoL@nV91',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false }
+}));
+
+// Middleware kiểm tra session
+app.use(checkAuthSession);
+
+// Kết nối MongoDB
 connectDB();
 
-// Định nghĩa routes
+// Routes
+app.use('/cart', cartRoutes); // Add /cart as the base path
+app.use(authRoutes); // Login và Register
 app.use('/api/accounts', accountRoutes);
-app.use('/', foodRoutes);
-// app.use('/api/carts', cartRoutes);
-// app.use('/api/categories', categoryRoutes);
-// app.use('/api/foods', foodRoutes);
-// app.use('/api/orders', orderRoutes);
+app.use('/', foodRoutes); // Trang chính
 
-// Cấu hình cổng và chạy server
+// Xử lý lỗi 404
+app.use((req, res) => {
+  res.status(404).render('error', { message: 'Trang bạn yêu cầu không tồn tại.' });
+});
+
+// Xử lý lỗi server
+app.use((err, req, res, next) => {
+  console.error('Internal Server Error:', err);
+  res.status(500).render('error', { message: 'Đã xảy ra lỗi máy chủ.' });
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

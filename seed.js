@@ -1,5 +1,6 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs'); // Import bcryptjs
 const connectDB = require('./configs/database');
 
 // Import các models
@@ -23,18 +24,24 @@ connectDB().then(async () => {
     await Order.deleteMany({});
     console.log('All existing data deleted.');
 
-    // Tạo account mẫu
+    // Hàm hash mật khẩu
+    const hashPassword = async (password) => {
+      const salt = await bcrypt.genSalt(10);
+      return bcrypt.hash(password, salt);
+    };
+
+    // Tạo account mẫu với mật khẩu đã được hash
     const account1 = await Account.create({
-      username: 'john_doe',
-      password: 'password123',
+      username: 'hungnguyen',
+      password: await hashPassword('password123'), // Hash mật khẩu
       phone: '123456789',
       address: '123 Main Street',
       role: 'user',
     });
 
     const account2 = await Account.create({
-      username: 'jane_smith',
-      password: 'securepassword',
+      username: 'tuyentieple',
+      password: await hashPassword('securepassword'), // Hash mật khẩu
       phone: '987654321',
       address: '456 Market Street',
       role: 'admin',
@@ -43,17 +50,22 @@ connectDB().then(async () => {
     // Tạo categories mẫu
     const category1 = await Category.create({
       name: 'Beverages',
-      img: 'https://images.unsplash.com/photo-1628200558926-463e8390113d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      img: 'URL-to-image',
     });
 
     const category2 = await Category.create({
       name: 'Fast Food',
-      img: 'https://images.unsplash.com/photo-1616696269042-7a27b57a6808?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      img: 'URL-to-image',
     });
 
     const category3 = await Category.create({
       name: 'Desserts',
-      img: 'https://images.unsplash.com/photo-1702742322469-36315505728f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      img: 'URL-to-image',
+    });
+
+    const category4 = await Category.create({
+      name: 'Healthy',
+      img: 'URL-to-image',
     });
 
     // Tạo foods mẫu
@@ -97,35 +109,56 @@ connectDB().then(async () => {
       category_id: category3._id,
     });
 
-    // Tạo carts mẫu
-    const cart1 = await Cart.create({
-      is_order: false,
-      account_id: account1._id,
+    const food6 = await Food.create({
+      name: 'Ice Cream Sundae',
+      price: 3.5,
+      img: 'https://images.unsplash.com/photo-1641443085529-f79e3f0ca3ab?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      address: '457 Dessert Street',
+      category_id: category3._id,
     });
 
-    const cart2 = await Cart.create({
-      is_order: true,
-      account_id: account2._id,
+    const food7 = await Food.create({
+      name: 'Salad Bowl',
+      price: 4.5,
+      img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      address: '789 Healthy Lane',
+      category_id: category4._id,
     });
 
-    // Tạo items mẫu
-    const item1 = await Item.create({
-      food_id: food1._id,
-      cart_id: cart1._id,
-      quantity: 2,
+    const food8 = await Food.create({
+      name: 'Fruit Smoothie',
+      price: 3.0,
+      img: 'https://images.unsplash.com/photo-1514994960127-ed3ef9239d11?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      address: '790 Healthy Lane',
+      category_id: category4._id,
     });
 
-    const item2 = await Item.create({
-      food_id: food3._id,
-      cart_id: cart1._id,
-      quantity: 1,
+    const food9 = await Food.create({
+      name: 'Veggie Wrap',
+      price: 5.5,
+      img: 'https://images.unsplash.com/photo-1542128722-d6fe34923abc?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      address: '791 Healthy Lane',
+      category_id: category4._id,
     });
 
-    const item3 = await Item.create({
-      food_id: food5._id,
-      cart_id: cart2._id,
-      quantity: 3,
-    });
+     // Tạo carts mẫu
+     const cart1 = await Cart.create({ is_order: false, account_id: account1._id, items: [] });
+     const cart2 = await Cart.create({ is_order: false, account_id: account2._id, items: [] });
+
+    // Tạo items mẫu và liên kết với carts
+    const item1 = await Item.create({ food_id: food1._id, cart_id: cart1._id, quantity: 2 });
+    const item2 = await Item.create({ food_id: food2._id, cart_id: cart1._id, quantity: 1 });
+    const item3 = await Item.create({ food_id: food3._id, cart_id: cart2._id, quantity: 3 });
+    const item4 = await Item.create({ food_id: food4._id, cart_id: cart2._id, quantity: 1 });
+    const item5 = await Item.create({ food_id: food5._id, cart_id: cart1._id, quantity: 1 });
+    const item6 = await Item.create({ food_id: food6._id, cart_id: cart2._id, quantity: 2 });
+    const item7 = await Item.create({ food_id: food7._id, cart_id: cart1._id, quantity: 1 });
+    const item8 = await Item.create({ food_id: food8._id, cart_id: cart2._id, quantity: 1 });
+    const item9 = await Item.create({ food_id: food9._id, cart_id: cart1._id, quantity: 2 });
+
+    // Cập nhật items vào carts
+    await Cart.findByIdAndUpdate(cart1._id, { $push: { items: [item1._id, item2._id, item5._id, item7._id, item9._id] } });
+    await Cart.findByIdAndUpdate(cart2._id, { $push: { items: [item3._id, item4._id, item6._id, item8._id] } });
 
     // Tạo orders mẫu
     const order1 = await Order.create({

@@ -2,19 +2,16 @@ const express = require('express');
 const router = express.Router();
 const cartController = require('../controllers/cart.controller');
 
-// Route để lấy tất cả carts
-router.get('/', cartController.getAllCarts);
+// Hiển thị giỏ hàng của tài khoản hiện tại
+router.get('/', cartController.getCartForAccount); // Base path is already /cart
 
-// Route để lấy một cart theo ID
-router.get('/:id', cartController.getCartById);
+// Chỉnh sửa số lượng item trong giỏ hàng
+router.post('/edit/:id', cartController.editCartItem);
 
-// Route để tạo mới một cart
-router.post('/', cartController.createCart);
+// Xóa item khỏi giỏ hàng
+router.delete('/delete/:id', cartController.deleteCartItem);
 
-// Route để cập nhật một cart theo ID
-router.put('/:id', cartController.updateCart);
-
-// Route để xóa một cart theo ID
-router.delete('/:id', cartController.deleteCart);
+// Add item to cart
+router.post('/add', cartController.addFoodItemToCart);
 
 module.exports = router;
