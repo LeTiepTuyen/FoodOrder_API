@@ -1,12 +1,11 @@
 const Category = require('../models/category.model');
 
 // Get all categories
-exports.getAllCategories = async (req, res) => {
+exports.getAllCategories = async () => {
   try {
-    const categories = await Category.find();
-    res.status(200).json(categories);
+    return await Category.find();
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    throw new Error(error.message);
   }
 };
 

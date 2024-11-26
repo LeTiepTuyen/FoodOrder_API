@@ -1,10 +1,15 @@
 const Food = require('../models/food.model');
+const Category = require('../models/category.model');
 
 // Get all foods
 exports.getAllFoods = async (req, res) => {
   try {
     const foods = await Food.find().populate('category_id');
-    res.render('homepage', { foods, isLoading: false }); // Truyền biến isLoading
+    if (req.query.manage) {
+      const categories = await Category.find();
+      return res.render('food_manage', { foods, categories });
+    }
+    res.render('homepage', { foods, isLoading: false });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -27,13 +32,12 @@ exports.getFoodById = async (req, res) => {
   }
 };
 
-
 // Create new food
 exports.createFood = async (req, res) => {
   try {
     const newFood = new Food(req.body);
     await newFood.save();
-    res.status(201).json(newFood);
+    res.redirect('/foods/manage');
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -46,7 +50,7 @@ exports.updateFood = async (req, res) => {
     if (!updatedFood) {
       return res.status(404).json({ message: 'Food not found' });
     }
-    res.status(200).json(updatedFood);
+    res.redirect('/foods/manage');
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

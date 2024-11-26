@@ -47,6 +47,7 @@ connectDB();
 app.use('/cart', cartRoutes); // Add /cart as the base path
 app.use(authRoutes); // Login và Register
 app.use('/api/accounts', accountRoutes);
+app.use('/foods', foodRoutes);
 app.use('/', foodRoutes); // Trang chính
 
 // Xử lý lỗi 404

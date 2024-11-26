@@ -1,6 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const foodController = require('../controllers/food.controller');
+const categoryController = require('../controllers/category.controller');
+
+// Route để hiển thị trang quản lý món ăn
+router.get('/manage', (req, res) => {
+  req.query.manage = true;
+  foodController.getAllFoods(req, res);
+});
 
 // Route để hiển thị danh sách các món ăn trên trang chủ
 router.get('/', foodController.getAllFoods);
@@ -12,7 +19,7 @@ router.get('/:id', foodController.getFoodById);
 router.post('/', foodController.createFood);
 
 // Route để cập nhật một food theo ID
-router.put('/:id', foodController.updateFood);
+router.post('/:id', foodController.updateFood);
 
 // Route để xóa một food theo ID
 router.delete('/:id', foodController.deleteFood);
